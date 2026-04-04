@@ -26,48 +26,90 @@ export default function Sidebar() {
   const { state, dispatch } = useApp();
   const s = useTheme();
   const isAdmin = state.role === "admin";
+  const isOpen  = state.sidebarOpen;
+
+  const open  = () => dispatch({ type: "OPEN_SIDEBAR"  });
+  const close = () => dispatch({ type: "CLOSE_SIDEBAR" });
 
   return (
     <>
-      {/* Mobile overlay */}
-      {state.sidebarOpen && (
+      {/* ── Hamburger style — mobile only ── */}
+      <style>{`
+        .hamburger-btn {
+          display: none;
+        }
+        @media (max-width: 768px) {
+          .hamburger-btn {
+            display: flex !important;
+          }
+        }
+      `}</style>
+
+      {/* ── Hamburger button — mobile only ── */}
+      <button
+        onClick={isOpen ? close : open}
+        className="hamburger-btn"
+        style={{
+          position: "fixed", top: 14, left: 14, zIndex: 1200,
+          width: 40, height: 40, borderRadius: 11,
+          background: "rgba(99,102,241,.18)",
+          border: "1px solid rgba(99,102,241,.3)",
+          cursor: "pointer", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 5,
+          backdropFilter: "blur(8px)", transition: "background .2s",
+          padding: 0,
+        }}
+      >
+        <span style={{
+          display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+          transition: "transform .3s cubic-bezier(.22,1,.36,1)",
+          transform: isOpen ? "rotate(45deg) translate(5px, 5px)" : "none",
+        }}/>
+        <span style={{
+          display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+          transition: "opacity .2s",
+          opacity: isOpen ? 0 : 1,
+        }}/>
+        <span style={{
+          display: "block", width: 18, height: 2, borderRadius: 2, background: "white",
+          transition: "transform .3s cubic-bezier(.22,1,.36,1)",
+          transform: isOpen ? "rotate(-45deg) translate(5px, -5px)" : "none",
+        }}/>
+      </button>
+
+      {/* ── Mobile overlay ── */}
+      {isOpen && (
         <div
           className="sidebar-overlay"
-          onClick={() => dispatch({ type: "CLOSE_SIDEBAR" })}
+          onClick={close}
           style={{ display: "block" }}
         />
       )}
 
       <aside
-        className={`sidebar${state.sidebarOpen ? " open" : ""}`}
+        className={`sidebar${isOpen ? " open" : ""}`}
         style={{ background: s.sidebar, borderRight: "1px solid rgba(99,102,241,.08)" }}
       >
         {/* ── Logo ── */}
         <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(99,102,241,.08)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 13,
-                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 18px rgba(99,102,241,.55)",
-                animation: "glow 3s ease-in-out infinite", flexShrink: 0,
-              }}>
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="M2 17l10 5 10-5"/>
-                  <path d="M2 12l10 5 10-5"/>
-                </svg>
-              </div>
-              <div>
-                <div style={{ color: "white", fontWeight: 800, fontSize: 16, letterSpacing: "-.4px" }}>FinTrack</div>
-                <div style={{ color: "rgba(255,255,255,.22)", fontSize: 11 }}>Personal Finance</div>
-              </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 13,
+              background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 4px 18px rgba(99,102,241,.55)",
+              animation: "glow 3s ease-in-out infinite", flexShrink: 0,
+            }}>
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
             </div>
-            <button
-              onClick={() => dispatch({ type: "CLOSE_SIDEBAR" })}
-              style={{ background: "rgba(255,255,255,.07)", border: "none", borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: "rgba(255,255,255,.5)", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}
-            >×</button>
+            <div>
+              <div style={{ color: "white", fontWeight: 800, fontSize: 16, letterSpacing: "-.4px" }}>FinTrack</div>
+              <div style={{ color: "rgba(255,255,255,.22)", fontSize: 11 }}>Personal Finance</div>
+            </div>
           </div>
         </div>
 
@@ -79,7 +121,10 @@ export default function Sidebar() {
           {NAV.map(item => (
             <button
               key={item.id}
-              onClick={() => dispatch({ type: "SET_TAB", payload: item.id })}
+              onClick={() => {
+                dispatch({ type: "SET_TAB", payload: item.id });
+                close();
+              }}
               className={`nav-btn${state.activeTab === item.id ? " active" : ""}`}
               style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, marginBottom: 3, background: "transparent", color: "rgba(255,255,255,.32)", fontWeight: 500, fontSize: 14, textAlign: "left", fontFamily: "inherit" }}
             >
@@ -96,7 +141,7 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* ── Role switcher (desktop only) ── */}
+        {/* ── Role switcher ── */}
         <div className="desktop-role" style={{ padding: "14px 14px 20px", borderTop: "1px solid rgba(99,102,241,.08)" }}>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,.18)", letterSpacing: "1.2px", fontWeight: 700, marginBottom: 10 }}>
             ACCESS ROLE
@@ -110,8 +155,8 @@ export default function Sidebar() {
               }}
               style={{ width: "100%", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 9, color: "white", padding: "8px 10px", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}
             >
-              <option value="viewer" style={{ background: "#0d1b35" }}>👁  Viewer</option>
-              <option value="admin"  style={{ background: "#0d1b35" }}>🛡  Admin</option>
+              <option value="viewer" style={{ background: "#0d1b35" }}>  Viewer</option>
+              <option value="admin"  style={{ background: "#0d1b35" }}> Admin</option>
             </select>
             <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 10 }}>
               <div style={{ width: 7, height: 7, borderRadius: "50%", background: isAdmin ? "#10b981" : "#f59e0b", animation: isAdmin ? "pulse 2s infinite" : "none" }}/>

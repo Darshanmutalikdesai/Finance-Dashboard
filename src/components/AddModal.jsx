@@ -4,7 +4,7 @@ import { CAT_LIST } from "../constants";
 
 
 //  ADD TRANSACTION MODAL
-export default function AddModal() {
+export default function AddModal({ editId }) {
   const { state, dispatch } = useApp();
   const s = useTheme();
   const { newTx } = state;
@@ -42,7 +42,9 @@ export default function AddModal() {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-.3px" }}>Add Transaction</div>
+            <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-.3px" }}>
+              {editId ? "Edit Transaction" : "Add Transaction"}
+            </div>
             <div style={{ fontSize: 12, color: s.muted, marginTop: 3 }}>Admin · saved locally</div>
           </div>
           <button
@@ -92,7 +94,7 @@ export default function AddModal() {
         {isOther && (
           <div style={{ marginBottom: 22, animation: "fadeUp .3s cubic-bezier(.22,1,.36,1)" }}>
             <label style={{ fontSize: 11, color: "#6366f1", display: "block", marginBottom: 6, fontWeight: 700, letterSpacing: ".5px" }}>
-              ✏️ CUSTOM CATEGORY NAME
+               CUSTOM CATEGORY NAME
             </label>
             <div style={{ position: "relative" }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
@@ -113,6 +115,29 @@ export default function AddModal() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ✅ Delete button — only shown when editing an existing transaction */}
+        {editId && (
+          <button
+            onClick={() => {
+              dispatch({ type: "DELETE_TRANSACTION", payload: editId });
+              dispatch({ type: "SET_ADD_OPEN", payload: false });
+            }}
+            style={{
+              width: "100%", padding: "11px", marginBottom: 10,
+              border: "1.5px solid #f43f5e", borderRadius: 12,
+              background: "transparent", color: "#f43f5e",
+              cursor: "pointer", fontSize: 14, fontFamily: "inherit", fontWeight: 600,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" strokeWidth="2">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+            </svg>
+            Delete Transaction
+          </button>
         )}
 
         {/* Submit */}
