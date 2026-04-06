@@ -4,76 +4,213 @@ import { fmt, catColor, catLight } from "../constants";
 import { MonthlyBarChart, SpendingDonut, BalanceLine } from "../charts";
 import Counter from "../components/Counter";
 
-// ── Responsive style injection ──────────────────────────────────────────────
+// ── Responsive style injection ────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
-  /* KPI cards: 3 col → 1 col on mobile */
+  /* ── KPI Grid ── */
   .dash-kpi-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     margin-bottom: 18px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     .dash-kpi-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    .dash-kpi-grid > *:last-child {
+    /* Last card spans full width when 3 items in 2-col grid */
+    .dash-kpi-grid > *:nth-child(3) {
       grid-column: 1 / -1;
     }
   }
   @media (max-width: 480px) {
     .dash-kpi-grid {
       grid-template-columns: 1fr;
+      gap: 10px;
     }
-    .dash-kpi-grid > *:last-child {
+    .dash-kpi-grid > *:nth-child(3) {
       grid-column: auto;
-    }
-    .dash-kpi-value {
-      font-size: 22px !important;
-    }
-    .dash-card-pad {
-      padding: 16px !important;
     }
   }
 
-  /* Charts row: side-by-side → stacked */
+  /* ── KPI Card internals ── */
+  .dash-card-pad {
+    padding: 22px 24px;
+  }
+  @media (max-width: 600px) {
+    .dash-card-pad {
+      padding: 16px 18px !important;
+    }
+  }
+  @media (max-width: 380px) {
+    .dash-card-pad {
+      padding: 14px 14px !important;
+    }
+  }
+
+  .dash-kpi-value {
+    font-size: 28px;
+  }
+  @media (max-width: 860px) {
+    .dash-kpi-value {
+      font-size: 24px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .dash-kpi-value {
+      font-size: 26px !important;
+    }
+  }
+  @media (max-width: 360px) {
+    .dash-kpi-value {
+      font-size: 22px !important;
+    }
+  }
+
+  /* ── Charts Row ── */
   .dash-charts-row {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
     gap: 14px;
     margin-bottom: 14px;
   }
-  @media (max-width: 700px) {
+  @media (max-width: 760px) {
     .dash-charts-row {
       grid-template-columns: 1fr;
-    }
-    .dash-chart-bar {
-      height: 170px !important;
-    }
-    .dash-chart-line {
-      height: 160px !important;
+      gap: 12px;
     }
   }
 
-  /* Transaction rows: prevent overflow on narrow screens */
-  .dash-tx-desc {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 160px;
+  .dash-chart-bar {
+    height: 210px;
+  }
+  @media (max-width: 760px) {
+    .dash-chart-bar {
+      height: 180px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .dash-chart-bar {
+      height: 155px !important;
+    }
+  }
+
+  .dash-chart-line {
+    height: 200px;
+  }
+  @media (max-width: 760px) {
+    .dash-chart-line {
+      height: 170px !important;
+    }
+  }
+  @media (max-width: 480px) {
+    .dash-chart-line {
+      height: 145px !important;
+    }
+  }
+
+  /* ── Chart header row (title + legend) ── */
+  .dash-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dash-legend {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
   }
   @media (max-width: 400px) {
-    .dash-tx-desc {
-      max-width: 100px;
+    .dash-legend {
+      gap: 8px;
     }
-    .dash-tx-meta {
-      display: none;
-    }
+  }
+
+  /* ── Transaction rows ── */
+  .dash-tx-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .dash-tx-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    font-size: 16px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 420px) {
     .dash-tx-icon {
       width: 32px !important;
       height: 32px !important;
       font-size: 13px !important;
+      border-radius: 8px !important;
     }
+  }
+
+  .dash-tx-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+  @media (max-width: 600px) {
+    .dash-tx-desc {
+      max-width: 140px;
+    }
+  }
+  @media (max-width: 420px) {
+    .dash-tx-desc {
+      max-width: 110px;
+    }
+  }
+  @media (max-width: 340px) {
+    .dash-tx-desc {
+      max-width: 80px;
+    }
+  }
+
+  .dash-tx-meta {
+    font-size: 11px;
+    margin-top: 1px;
+  }
+  @media (max-width: 420px) {
+    .dash-tx-meta {
+      display: none;
+    }
+  }
+
+  .dash-tx-amount {
+    font-weight: 800;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 420px) {
+    .dash-tx-amount {
+      font-size: 13px !important;
+    }
+  }
+
+  /* ── Recent Transactions header ── */
+  .dash-txlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 `;
 
@@ -86,10 +223,11 @@ function useResponsiveCss() {
       style.textContent = RESPONSIVE_CSS;
       document.head.appendChild(style);
     }
+    // cleanup not needed — stylesheet is shared across mounts
   }, []);
 }
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const { state, dispatch } = useApp();
   const s = useTheme();
@@ -103,8 +241,12 @@ export default function DashboardPage() {
 
   const breakdown = useMemo(() => {
     const m = {};
-    txns.filter(t => t.type === "expense").forEach(t => { m[t.category] = (m[t.category] || 0) + t.amount; });
-    return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value }));
+    txns.filter(t => t.type === "expense").forEach(t => {
+      m[t.category] = (m[t.category] || 0) + t.amount;
+    });
+    return Object.entries(m)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, value]) => ({ label, value }));
   }, [txns]);
 
   const trend = useMemo(() => {
@@ -126,7 +268,9 @@ export default function DashboardPage() {
       value:  Math.abs(balance),
       accent: balance >= 0 ? "#10b981" : "#f43f5e",
       sub:    balance >= 0 ? "Positive ↑" : "Deficit ↓",
-      bg:     balance >= 0 ? "linear-gradient(135deg,#10b98114,#10b98105)" : "linear-gradient(135deg,#f43f5e14,#f43f5e05)",
+      bg:     balance >= 0
+        ? "linear-gradient(135deg,#10b98114,#10b98105)"
+        : "linear-gradient(135deg,#f43f5e14,#f43f5e05)",
       border: balance >= 0 ? "#10b98122" : "#f43f5e22",
     },
     {
@@ -159,27 +303,41 @@ export default function DashboardPage() {
             style={{
               background: c.bg,
               border:     `1px solid ${c.border}`,
-              padding:    "22px 24px",
               position:   "relative",
               overflow:   "hidden",
             }}
           >
             {/* decorative circle */}
-            <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: c.accent + "0d" }} />
+            <div style={{
+              position: "absolute", top: -20, right: -20,
+              width: 80, height: 80, borderRadius: "50%",
+              background: c.accent + "0d",
+              pointerEvents: "none",
+            }} />
 
             <div style={{ fontSize: 12, color: s.muted, fontWeight: 600, marginBottom: 10, letterSpacing: ".3px" }}>
               {c.label}
             </div>
             <div
               className="num dash-kpi-value"
-              style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-1px", fontFamily: "'JetBrains Mono'", color: s.text, animationDelay: `${i * .1}s` }}
+              style={{
+                fontWeight: 800,
+                letterSpacing: "-1px",
+                fontFamily: "'JetBrains Mono', monospace",
+                color: s.text,
+                animationDelay: `${i * 0.1}s`,
+              }}
             >
               <Counter to={c.value} dur={900 + i * 100} />
             </div>
             <div style={{ fontSize: 12, color: c.accent, marginTop: 8, fontWeight: 600 }}>{c.sub}</div>
 
             {/* bottom accent bar */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,${c.accent}00,${c.accent}99,${c.accent}00)` }} />
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0, height: 3,
+              background: `linear-gradient(90deg,${c.accent}00,${c.accent}99,${c.accent}00)`,
+              pointerEvents: "none",
+            }} />
           </div>
         ))}
       </div>
@@ -188,29 +346,30 @@ export default function DashboardPage() {
       <div className="dash-charts-row">
         <div
           className="card fade-up dash-card-pad"
-          style={{ background: s.card, border: `1px solid ${s.border}`, padding: "20px 22px", animationDelay: ".2s" }}
+          style={{ background: s.card, border: `1px solid ${s.border}`, animationDelay: ".2s" }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+          <div className="dash-chart-header">
             <div>
               <div style={{ fontSize: 14, fontWeight: 700 }}>Monthly Overview</div>
               <div style={{ fontSize: 12, color: s.muted, marginTop: 2 }}>Income vs Expenses</div>
             </div>
-            <div style={{ display: "flex", gap: 12, flexShrink: 0 }}>
+            <div className="dash-legend">
               {[["Income", "#10b981"], ["Expenses", "#f43f5e"]].map(([l, c]) => (
                 <div key={l} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: s.muted, fontWeight: 500 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: c }} />{l}
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: c, flexShrink: 0 }} />
+                  {l}
                 </div>
               ))}
             </div>
           </div>
-          <div className="chart-height-bar dash-chart-bar" style={{ height: 210 }}>
+          <div className="dash-chart-bar">
             <MonthlyBarChart trend={trend} />
           </div>
         </div>
 
         <div
           className="card fade-up dash-card-pad"
-          style={{ background: s.card, border: `1px solid ${s.border}`, padding: "20px 22px", animationDelay: ".28s" }}
+          style={{ background: s.card, border: `1px solid ${s.border}`, animationDelay: ".28s" }}
         >
           <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>Spending Breakdown</div>
           <div style={{ fontSize: 12, color: s.muted, marginBottom: 16 }}>Hover segments to explore</div>
@@ -221,11 +380,11 @@ export default function DashboardPage() {
       {/* ── Balance Trajectory ── */}
       <div
         className="card fade-up dash-card-pad"
-        style={{ background: s.card, border: `1px solid ${s.border}`, padding: "20px 22px", marginBottom: 14, animationDelay: ".34s" }}
+        style={{ background: s.card, border: `1px solid ${s.border}`, marginBottom: 14, animationDelay: ".34s" }}
       >
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>Balance Trajectory</div>
         <div style={{ fontSize: 12, color: s.muted, marginBottom: 16 }}>Cumulative net balance over months</div>
-        <div className="chart-height-line dash-chart-line" style={{ height: 200 }}>
+        <div className="dash-chart-line">
           <BalanceLine trend={trend} />
         </div>
       </div>
@@ -233,13 +392,17 @@ export default function DashboardPage() {
       {/* ── Recent Transactions ── */}
       <div
         className="card fade-up dash-card-pad"
-        style={{ background: s.card, border: `1px solid ${s.border}`, padding: "20px 22px", animationDelay: ".4s" }}
+        style={{ background: s.card, border: `1px solid ${s.border}`, animationDelay: ".4s" }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <div className="dash-txlist-header">
           <div style={{ fontSize: 14, fontWeight: 700 }}>Recent Transactions</div>
           <button
             onClick={() => dispatch({ type: "SET_TAB", payload: "transactions" })}
-            style={{ fontSize: 13, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontFamily: "inherit", flexShrink: 0 }}
+            style={{
+              fontSize: 13, color: "#6366f1", background: "none",
+              border: "none", cursor: "pointer", fontWeight: 700,
+              fontFamily: "inherit", flexShrink: 0, padding: 0,
+            }}
           >
             View all →
           </button>
@@ -248,16 +411,11 @@ export default function DashboardPage() {
         {txns.slice(0, 7).map((t, i) => (
           <div
             key={t.id}
-            className="tx-row"
+            className="tx-row dash-tx-row"
             style={{
-              display:       "flex",
-              justifyContent: "space-between",
-              alignItems:    "center",
-              padding:       "10px 8px",
-              borderBottom:  `1px solid ${s.border}`,
-              borderRadius:  8,
-              animation:     `fadeUp .4s ease ${i * .04}s both`,
-              gap:           8,
+              borderBottom: `1px solid ${s.border}`,
+              borderRadius: 8,
+              animation:    `fadeUp .4s ease ${i * 0.04}s both`,
             }}
           >
             {/* Left: icon + text */}
@@ -265,16 +423,8 @@ export default function DashboardPage() {
               <div
                 className="dash-tx-icon"
                 style={{
-                  width:          38,
-                  height:         38,
-                  borderRadius:   11,
-                  background:     catLight(t.category),
-                  display:        "flex",
-                  alignItems:     "center",
-                  justifyContent: "center",
-                  fontSize:       16,
-                  border:         `1px solid ${catColor(t.category)}28`,
-                  flexShrink:     0,
+                  background: catLight(t.category),
+                  border:     `1px solid ${catColor(t.category)}28`,
                 }}
               >
                 {t.type === "income" ? "↑" : "↓"}
@@ -283,21 +433,17 @@ export default function DashboardPage() {
                 <div className="dash-tx-desc" style={{ fontSize: 13, fontWeight: 600 }}>
                   {t.description}
                 </div>
-                <div className="dash-tx-meta" style={{ fontSize: 11, color: s.muted, marginTop: 1 }}>
+                <div className="dash-tx-meta" style={{ color: s.muted }}>
                   {t.category} · {t.date}
                 </div>
               </div>
             </div>
 
             {/* Right: amount */}
-            <div style={{
-              fontWeight:  800,
-              fontSize:    14,
-              fontFamily:  "'JetBrains Mono'",
-              color:       t.type === "income" ? "#10b981" : "#f43f5e",
-              flexShrink:  0,
-              whiteSpace:  "nowrap",
-            }}>
+            <div
+              className="dash-tx-amount"
+              style={{ color: t.type === "income" ? "#10b981" : "#f43f5e" }}
+            >
               {t.type === "income" ? "+" : "-"}{fmt(t.amount)}
             </div>
           </div>
