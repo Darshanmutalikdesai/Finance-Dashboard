@@ -1,13 +1,3 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-
 
 
 # FinTrack — File Structure
@@ -42,34 +32,58 @@ fintrack/
     └── InsightsPage.jsx           ← Stat cards, category bar, balance line, observations
 ```
 
-## How to use
+# FinTrack — Finance Dashboard
 
-In your `main.jsx` / `index.jsx`:
+A personal finance dashboard built with React + Vite, featuring interactive charts, role-based access, and responsive design.
 
-```jsx
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./fintrack/App";
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+## Getting Started
+```bash
+git clone https://github.com/Darshanmutalikdesai/Finance-Dashboard.git
+cd Finance-Dashboard
+npm install
+npm run dev
 ```
 
-## State actions (dispatch reference)
+## Environment Variables
 
-| Action type          | Payload / notes                          |
-|----------------------|------------------------------------------|
-| ADD_TRANSACTION      | `{ ...txn, id, amount (parsed float) }`  |
-| DELETE_TRANSACTION   | `id`                                     |
-| SET_ROLE             | `"viewer"` or `"admin"`                  |
-| TOGGLE_DARK          | —                                        |
-| SET_TAB              | `"dashboard"` / `"transactions"` / `"insights"` |
-| SET_SEARCH           | string                                   |
-| SET_FTYPE            | `"all"` / `"income"` / `"expense"`       |
-| SET_FCAT             | `"all"` or any category string           |
-| SET_SORT             | `"date-desc"` / `"date-asc"` / `"amount-desc"` / `"amount-asc"` |
-| SET_ADD_OPEN         | boolean                                  |
-| SET_LOGIN_OPEN       | boolean                                  |
-| SET_NEW_TX           | partial newTx object                     |
-| RESET_NEW_TX         | — (clears form + closes modal)           |
-| TOGGLE_SIDEBAR       | —                                        |
-| CLOSE_SIDEBAR        | —                                        |
+Create a `.env` file in the root of the project and add:
+## Admin Login Credentials
+
+| Field    | Value      |
+|----------|------------|
+| Username | admin      |
+| Password | admin123   |
+
+Admin access unlocks: Add Transaction, Delete transactions, and custom category input.
+
+## State Management
+
+All state is managed via `useReducer` inside `AppContext.js`. Use the `dispatch` function via the `useApp()` hook.
+
+| Action Type        | Payload / Notes                                      |
+|--------------------|------------------------------------------------------|
+| ADD_TRANSACTION    | `{ ...txn, id: Date.now(), amount: parseFloat }`     |
+| DELETE_TRANSACTION | `id`                                                 |
+| SET_ROLE           | `"viewer"` or `"admin"`                              |
+| TOGGLE_DARK        | —                                                    |
+| SET_TAB            | `"dashboard"` / `"transactions"` / `"insights"`      |
+| SET_SEARCH         | string                                               |
+| SET_FTYPE          | `"all"` / `"income"` / `"expense"`                   |
+| SET_FCAT           | `"all"` or any category string                       |
+| SET_SORT           | `"date-desc"` / `"date-asc"` / `"amount-desc"` / `"amount-asc"` |
+| SET_ADD_OPEN       | boolean                                              |
+| SET_LOGIN_OPEN     | boolean                                              |
+| SET_NEW_TX         | partial newTx object                                 |
+| RESET_NEW_TX       | — (clears form and closes modal)                     |
+| TOGGLE_SIDEBAR     | —                                                    |
+| CLOSE_SIDEBAR      | —                                                    |
+
+## Tech Stack
+
+- **React 18 + Vite** — fast HMR development
+- **react-chartjs-2 + Chart.js** — Bar, Doughnut, and Line charts
+- **React Context + useReducer** — centralised state management
+- **localStorage** — persists transactions and theme preference
+- **CSS media queries** — responsive across desktop, tablet, and mobile
+- **Sora + JetBrains Mono** — Google Fonts typography
+
