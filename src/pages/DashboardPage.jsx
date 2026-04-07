@@ -6,137 +6,164 @@ import Counter from "../components/Counter";
 
 // ── Responsive style injection ────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
-  /* ── KPI Grid ── */
+
+  /* ══════════════════════════════════════
+     KPI GRID
+     Desktop  : 3 equal columns
+     Tablet   : 2 columns, 3rd spans full
+     Mobile   : 1 column
+  ══════════════════════════════════════ */
   .dash-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
   }
   @media (max-width: 860px) {
     .dash-kpi-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
-    /* Last card spans full width when 3 items in 2-col grid */
     .dash-kpi-grid > *:nth-child(3) {
       grid-column: 1 / -1;
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 520px) {
     .dash-kpi-grid {
       grid-template-columns: 1fr;
       gap: 10px;
+      margin-bottom: 14px;
     }
     .dash-kpi-grid > *:nth-child(3) {
       grid-column: auto;
     }
   }
 
-  /* ── KPI Card internals ── */
+  /* ══════════════════════════════════════
+     KPI CARD PADDING
+  ══════════════════════════════════════ */
   .dash-card-pad {
     padding: 22px 24px;
+    box-sizing: border-box;
+  }
+  @media (max-width: 1100px) {
+    .dash-card-pad { padding: 18px 20px !important; }
   }
   @media (max-width: 600px) {
-    .dash-card-pad {
-      padding: 16px 18px !important;
-    }
+    .dash-card-pad { padding: 15px 16px !important; }
   }
   @media (max-width: 380px) {
-    .dash-card-pad {
-      padding: 14px 14px !important;
-    }
+    .dash-card-pad { padding: 12px 13px !important; }
   }
 
+  /* ══════════════════════════════════════
+     KPI VALUE FONT SIZE
+     Shrink on mid-desktop where 3 cards
+     are squeezed, grow back on tablet
+     (2-col layout gives more room)
+  ══════════════════════════════════════ */
   .dash-kpi-value {
     font-size: 28px;
+    line-height: 1.15;
   }
+  @media (max-width: 1280px) {
+    .dash-kpi-value { font-size: 25px !important; }
+  }
+  @media (max-width: 1100px) {
+    .dash-kpi-value { font-size: 22px !important; }
+  }
+  @media (max-width: 960px) {
+    .dash-kpi-value { font-size: 20px !important; }
+  }
+  /* Tablet 2-col — more space per card */
   @media (max-width: 860px) {
-    .dash-kpi-value {
-      font-size: 24px !important;
-    }
+    .dash-kpi-value { font-size: 26px !important; }
   }
-  @media (max-width: 480px) {
-    .dash-kpi-value {
-      font-size: 26px !important;
-    }
+  /* Mobile 1-col — full width */
+  @media (max-width: 520px) {
+    .dash-kpi-value { font-size: 28px !important; }
   }
   @media (max-width: 360px) {
-    .dash-kpi-value {
-      font-size: 22px !important;
-    }
+    .dash-kpi-value { font-size: 22px !important; }
   }
 
-  /* ── Charts Row ── */
+  /* ══════════════════════════════════════
+     CHARTS ROW
+     Desktop : bar (1.5fr) + donut (1fr)
+     ≤860px  : stacked single column
+  ══════════════════════════════════════ */
   .dash-charts-row {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: start;
   }
-  @media (max-width: 760px) {
+  @media (max-width: 860px) {
     .dash-charts-row {
       grid-template-columns: 1fr;
       gap: 12px;
+      margin-bottom: 12px;
     }
   }
 
-  .dash-chart-bar {
-    height: 210px;
-  }
-  @media (max-width: 760px) {
-    .dash-chart-bar {
-      height: 180px !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .dash-chart-bar {
-      height: 155px !important;
-    }
-  }
+  /* ══════════════════════════════════════
+     CHART HEIGHTS — bar
+  ══════════════════════════════════════ */
+  .dash-chart-bar { height: 220px; }
+  @media (max-width: 1200px) { .dash-chart-bar { height: 200px !important; } }
+  @media (max-width: 1024px) { .dash-chart-bar { height: 185px !important; } }
+  @media (max-width: 860px)  { .dash-chart-bar { height: 195px !important; } }
+  @media (max-width: 520px)  { .dash-chart-bar { height: 165px !important; } }
+  @media (max-width: 380px)  { .dash-chart-bar { height: 140px !important; } }
 
-  .dash-chart-line {
-    height: 200px;
-  }
-  @media (max-width: 760px) {
-    .dash-chart-line {
-      height: 170px !important;
-    }
-  }
-  @media (max-width: 480px) {
-    .dash-chart-line {
-      height: 145px !important;
-    }
-  }
+  /* ══════════════════════════════════════
+     CHART HEIGHTS — line
+  ══════════════════════════════════════ */
+  .dash-chart-line { height: 210px; }
+  @media (max-width: 1200px) { .dash-chart-line { height: 190px !important; } }
+  @media (max-width: 1024px) { .dash-chart-line { height: 175px !important; } }
+  @media (max-width: 860px)  { .dash-chart-line { height: 185px !important; } }
+  @media (max-width: 520px)  { .dash-chart-line { height: 155px !important; } }
+  @media (max-width: 380px)  { .dash-chart-line { height: 130px !important; } }
 
-  /* ── Chart header row (title + legend) ── */
+  /* ══════════════════════════════════════
+     CHART CARD HEADER (title + legend)
+  ══════════════════════════════════════ */
   .dash-chart-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 16px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
+  }
+  @media (max-width: 400px) {
+    .dash-chart-header { margin-bottom: 10px; }
   }
 
   .dash-legend {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     flex-shrink: 0;
     flex-wrap: wrap;
+    align-items: center;
   }
-  @media (max-width: 400px) {
-    .dash-legend {
-      gap: 8px;
-    }
-  }
+  @media (max-width: 400px) { .dash-legend { gap: 8px; } }
 
-  /* ── Transaction rows ── */
+  /* ══════════════════════════════════════
+     TRANSACTION ROWS
+  ══════════════════════════════════════ */
   .dash-tx-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 8px;
-    gap: 8px;
+    gap: 10px;
+    border-radius: 8px;
+  }
+  @media (max-width: 480px) {
+    .dash-tx-row { padding: 9px 4px; gap: 8px; }
   }
 
   .dash-tx-icon {
@@ -149,7 +176,7 @@ const RESPONSIVE_CSS = `
     align-items: center;
     justify-content: center;
   }
-  @media (max-width: 420px) {
+  @media (max-width: 480px) {
     .dash-tx-icon {
       width: 32px !important;
       height: 32px !important;
@@ -158,37 +185,25 @@ const RESPONSIVE_CSS = `
     }
   }
 
+  /* Description truncation — tighten on mid-desktop (sidebar eats space) */
   .dash-tx-desc {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 200px;
+    max-width: 280px;
   }
-  @media (max-width: 600px) {
-    .dash-tx-desc {
-      max-width: 140px;
-    }
-  }
-  @media (max-width: 420px) {
-    .dash-tx-desc {
-      max-width: 110px;
-    }
-  }
-  @media (max-width: 340px) {
-    .dash-tx-desc {
-      max-width: 80px;
-    }
-  }
+  @media (max-width: 1200px) { .dash-tx-desc { max-width: 200px; } }
+  @media (max-width: 1024px) { .dash-tx-desc { max-width: 160px; } }
+  @media (max-width: 860px)  { .dash-tx-desc { max-width: 260px; } }
+  @media (max-width: 600px)  { .dash-tx-desc { max-width: 150px; } }
+  @media (max-width: 420px)  { .dash-tx-desc { max-width: 110px; } }
+  @media (max-width: 340px)  { .dash-tx-desc { max-width: 80px;  } }
 
   .dash-tx-meta {
     font-size: 11px;
-    margin-top: 1px;
+    margin-top: 2px;
   }
-  @media (max-width: 420px) {
-    .dash-tx-meta {
-      display: none;
-    }
-  }
+  @media (max-width: 420px) { .dash-tx-meta { display: none; } }
 
   .dash-tx-amount {
     font-weight: 800;
@@ -196,19 +211,18 @@ const RESPONSIVE_CSS = `
     font-family: 'JetBrains Mono', monospace;
     flex-shrink: 0;
     white-space: nowrap;
+    margin-left: 6px;
   }
-  @media (max-width: 420px) {
-    .dash-tx-amount {
-      font-size: 13px !important;
-    }
-  }
+  @media (max-width: 420px) { .dash-tx-amount { font-size: 13px !important; } }
 
-  /* ── Recent Transactions header ── */
+  /* ══════════════════════════════════════
+     RECENT TXN SECTION HEADER
+  ══════════════════════════════════════ */
   .dash-txlist-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     gap: 8px;
     flex-wrap: wrap;
   }
@@ -223,7 +237,6 @@ function useResponsiveCss() {
       style.textContent = RESPONSIVE_CSS;
       document.head.appendChild(style);
     }
-    // cleanup not needed — stylesheet is shared across mounts
   }, []);
 }
 
@@ -252,8 +265,8 @@ export default function DashboardPage() {
   const trend = useMemo(() => {
     const m = {};
     txns.forEach(t => {
-      const d   = new Date(t.date);
-      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const d     = new Date(t.date);
+      const key   = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       const label = d.toLocaleString("default", { month: "short" }) + " '" + String(d.getFullYear()).slice(2);
       if (!m[key]) m[key] = { month: label, income: 0, expenses: 0, order: key };
       if (t.type === "income") m[key].income += t.amount;
@@ -318,19 +331,23 @@ export default function DashboardPage() {
             <div style={{ fontSize: 12, color: s.muted, fontWeight: 600, marginBottom: 10, letterSpacing: ".3px" }}>
               {c.label}
             </div>
+
             <div
               className="num dash-kpi-value"
               style={{
-                fontWeight: 800,
+                fontWeight:   800,
                 letterSpacing: "-1px",
-                fontFamily: "'JetBrains Mono', monospace",
-                color: s.text,
+                fontFamily:   "'JetBrains Mono', monospace",
+                color:        s.text,
                 animationDelay: `${i * 0.1}s`,
               }}
             >
               <Counter to={c.value} dur={900 + i * 100} />
             </div>
-            <div style={{ fontSize: 12, color: c.accent, marginTop: 8, fontWeight: 600 }}>{c.sub}</div>
+
+            <div style={{ fontSize: 12, color: c.accent, marginTop: 8, fontWeight: 600 }}>
+              {c.sub}
+            </div>
 
             {/* bottom accent bar */}
             <div style={{
@@ -399,9 +416,15 @@ export default function DashboardPage() {
           <button
             onClick={() => dispatch({ type: "SET_TAB", payload: "transactions" })}
             style={{
-              fontSize: 13, color: "#6366f1", background: "none",
-              border: "none", cursor: "pointer", fontWeight: 700,
-              fontFamily: "inherit", flexShrink: 0, padding: 0,
+              fontSize:   13,
+              color:      "#6366f1",
+              background: "none",
+              border:     "none",
+              cursor:     "pointer",
+              fontWeight: 700,
+              fontFamily: "inherit",
+              flexShrink: 0,
+              padding:    0,
             }}
           >
             View all →
@@ -414,7 +437,6 @@ export default function DashboardPage() {
             className="tx-row dash-tx-row"
             style={{
               borderBottom: `1px solid ${s.border}`,
-              borderRadius: 8,
               animation:    `fadeUp .4s ease ${i * 0.04}s both`,
             }}
           >
@@ -449,6 +471,7 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }
